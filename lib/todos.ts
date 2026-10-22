@@ -1,5 +1,4 @@
-import fs from 'fs/promises';
-import path from 'path';
+import initialTodos from '@/data/todos.json';
 
 
 // TypeScript interface defining the Todo entity structure
@@ -13,35 +12,39 @@ export interface Todo {
 }
 
 
-// Fefine the absolute file path to the local JSON storage
-
-const filePath = path.join(process.cwd(), 'data', 'todos.json');
-
+// La app se publica como sitio estático (output: 'export') en Apache/EC2,
+// así que no hay servidor Node para escribir en data/todos.json.
+// Las tareas se guardan en el navegador (localStorage) y data/todos.json
+// se usa solo como datos iniciales la primera vez.
+const STORAGE_KEY = 'bpds-todos';
 
 /**
- * Reusable helper function to read and parse the todos.json file.
- * Returns an array if the file does not exist or fails to read.
+ * Reads and parses the stored todos.
+ * Returns the initial todos if nothing is stored yet, or [] if it fails.
  */
-
-
 export async function readTodosFile(): Promise<Todo[]> {
+    if (typeof window === 'undefined') {
+        return [...(initialTodos as Todo[])];
+    }
     try {
-        const data = await fs.readFile(filePath, 'utf-8');
+        const data = window.localStorage.getItem(STORAGE_KEY);
+        if (data === null) {
+            return [...(initialTodos as Todo[])];
+        }
         return JSON.parse(data) as Todo[];
     } catch (error) {
-        console.error('Error reading todos file:', error);
+        console.error('Error reading todos from storage:', error);
         return [];
     }
 }
 
-// Saves the todos array back into todos.json
+// Saves the todos array in the browser storage
 export async function writeTodosFile(todos: Todo[]): Promise<void> {
     try {
-        // null and 2 make the JSON easy to read
-        await fs.writeFile(filePath, JSON.stringify(todos, null, 2), 'utf-8');
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
     } catch (error) {
         // we throw here so the caller knows the todo was not saved
-        console.error('Error writing todos file:', error);
+        console.error('Error writing todos to storage:', error);
         throw error;
     }
 }
