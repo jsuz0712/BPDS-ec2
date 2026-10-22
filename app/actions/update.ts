@@ -1,6 +1,4 @@
-"use server";
 
-import { revalidatePath } from "next/cache";
 import { readTodosFile, writeTodosFile } from "@/lib/todos";
 
 type TodoChanges = {
@@ -26,7 +24,6 @@ export async function updateTodo(id: string, changes: TodoChanges) {
     );
 
     await writeTodosFile(updatedTodos);
-    revalidatePath("/");
 
     return { success: true };
   } catch (error) {

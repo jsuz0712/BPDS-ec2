@@ -1,6 +1,4 @@
-"use server";
 
-import { revalidatePath } from "next/cache";
 import { restoreTodo } from "@/lib/todos";
 
 export async function restoreTodoAction(id: string) {
@@ -14,8 +12,6 @@ export async function restoreTodoAction(id: string) {
     if (!restoredTodo) {
       return { success: false, error: "Todo not found" };
     }
-
-    revalidatePath("/");
     return { success: true, data: restoredTodo };
   } catch (error) {
     console.error("Error restoring todo:", error);

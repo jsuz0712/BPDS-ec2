@@ -1,5 +1,4 @@
-'use server';
-// everything here runs on the server, because readTodosFile uses fs
+// runs in the browser: the todos are stored in localStorage (static export)
 
 import { readTodosFile, getDeletedTodos as readDeletedTodos, Todo } from '@/lib/todos';
 
