@@ -165,7 +165,7 @@ export default function Home() {
 
           <div>
             <p className="eyebrow">ORGANIZA TU DÍA</p>
-            <h1>Mis tareas - Jesus (EC2 + GitHub Actions)</h1>
+            <h1>Mis tareas - Jesus (EC2 + S3 + GitHub Actions)</h1>
             <p className="subtitle">
               Mantén tus pendientes claros y alcanza tus objetivos.
             </p>
